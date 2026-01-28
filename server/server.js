@@ -9,8 +9,37 @@ import userRouter from "./routes/userRoutes.js";
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Connect to DB
-connectDB().catch(err => console.error("Database connection error:", err));
+// Initialize DB connection
+let dbConnected = false;
+
+connectDB()
+  .then(() => {
+    dbConnected = true;
+    console.log("DB initialization successful");
+  })
+  .catch((err) => {
+    console.error("DB initialization failed:", err.message);
+    dbConnected = false;
+  });
+
+// Health check middleware to verify DB connection
+const checkDB = (req, res, next) => {
+  if (!dbConnected) {
+    connectDB()
+      .then(() => {
+        dbConnected = true;
+        next();
+      })
+      .catch((err) => {
+        console.error("DB reconnection failed:", err.message);
+        res
+          .status(503)
+          .json({ success: false, message: "Database unavailable" });
+      });
+  } else {
+    next();
+  }
+};
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -35,14 +64,23 @@ app.use(
 );
 
 app.get("/", (req, res) => res.send("API working"));
-app.get("/api/health", (req, res) => res.json({ success: true, message: "Server is running" }));
-app.use("/api/auth", authRouter);
-app.use("/api/user", userRouter);
+app.get("/api/health", (req, res) =>
+  res.json({ success: true, message: "Server is running", dbConnected }),
+);
+app.use("/api/auth", checkDB, authRouter);
+app.use("/api/user", checkDB, userRouter);
 
-// Error handling middleware
+// Catch 404
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: "Route not found" });
+});
+
+// Error handling middleware (must be last)
 app.use((err, req, res, next) => {
   console.error("Error:", err);
-  res.status(500).json({ success: false, message: err.message });
+  res
+    .status(500)
+    .json({ success: false, message: err.message || "Internal server error" });
 });
 
 if (process.env.NODE_ENV !== "production") {
