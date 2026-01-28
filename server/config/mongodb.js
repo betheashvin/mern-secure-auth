@@ -4,7 +4,6 @@ const connectDB = async () => {
   try {
     // Skip connection if already connected
     if (mongoose.connection.readyState >= 1) {
-      console.log("Database already connected");
       return;
     }
 
@@ -16,8 +15,13 @@ const connectDB = async () => {
     );
 
     await mongoose.connect(process.env.MONGODB_URL, {
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
+      minPoolSize: 2,
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 60000,
+      connectTimeoutMS: 10000,
+      retryWrites: true,
+      w: "majority",
     });
   } catch (error) {
     console.error("Failed to connect to database:", error.message);

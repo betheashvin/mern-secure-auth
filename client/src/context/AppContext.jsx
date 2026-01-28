@@ -19,21 +19,19 @@ export const AppContextProvider = (props) => {
       }
     } catch (error) {
       console.error("Auth state error:", error);
-      if (error.response?.status !== 401) {
-        toast.error(error.message);
-      }
+      // Don't show error toast for initial check
     }
   };
 
   const getUserData = async () => {
     try {
       const { data } = await axios.get(backendUrl + "/api/user/data");
-      data.success ? setUserData(data.userData) : toast.error(data.message);
+      if (data.success) {
+        setUserData(data.userData);
+      }
     } catch (error) {
       console.error("User data error:", error);
-      if (error.response?.status !== 401) {
-        toast.error(error.message);
-      }
+      // Don't show error toast for initial check
     }
   };
 

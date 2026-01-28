@@ -47,7 +47,7 @@ app.get("/api/health", (req, res) =>
   res.json({ success: true, message: "Server is running" }),
 );
 
-// Apply DB middleware to routes that need it
+// Routes that need DB connection
 app.use("/api/auth", ensureDBConnection, authRouter);
 app.use("/api/user", ensureDBConnection, userRouter);
 
