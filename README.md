@@ -1,8 +1,8 @@
 A production-level Authentication System built with the **MERN Stack** (MongoDB, Express, React, Node.js). 
 
-🔗 **Live Demo:** Vercel Link
+🔗 **Live Demo:** https://mern-auth-eight-chi.vercel.app/
 
-## ✨ Key Features
+## Key Features
 
 * **🔐 Secure Authentication:** User Registration & Login using JWT.
 * **🍪 HttpOnly Cookies:** Tokens are stored in HttpOnly cookies to prevent XSS attacks.
@@ -11,14 +11,14 @@ A production-level Authentication System built with the **MERN Stack** (MongoDB,
 * **🛡️ Protected Routes:** Frontend route guards to restrict access.
 * **✨ Modern UI:** Responsive design built with Tailwind CSS.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 * **Frontend:** React.js, Vite, Tailwind CSS, Axios, Context API.
 * **Backend:** Node.js, Express.js.
 * **Database:** MongoDB (Mongoose).
 * **Security:** JSON Web Tokens (JWT), BCrypt.js, Cookie-Parser, CORS.
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Clone the Repository
 ```bash
