@@ -176,7 +176,19 @@ export const verifyEmail = async (req, res) => {
 
 export const isAuthenticated = async (req, res) => {
   try {
-    return res.json({ success: true });
+    const { token } = req.cookies;
+    
+    if (!token) {
+      return res.json({ success: false, message: "No token found" });
+    }
+    
+    const tokenDecode = jwt.verify(token, process.env.JWT_SECRET);
+    
+    if (tokenDecode.id) {
+      return res.json({ success: true });
+    }
+    
+    return res.json({ success: false, message: "Invalid token" });
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
