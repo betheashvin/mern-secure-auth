@@ -9,44 +9,23 @@ import userRouter from "./routes/userRoutes.js";
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Initialize DB connection
-let dbConnected = false;
-
-connectDB()
-  .then(() => {
-    dbConnected = true;
-    console.log("DB initialization successful");
-  })
-  .catch((err) => {
-    console.error("DB initialization failed:", err.message);
-    dbConnected = false;
-  });
-
-// Health check middleware to verify DB connection
-const checkDB = (req, res, next) => {
-  if (!dbConnected) {
-    connectDB()
-      .then(() => {
-        dbConnected = true;
-        next();
-      })
-      .catch((err) => {
-        console.error("DB reconnection failed:", err.message);
-        res
-          .status(503)
-          .json({ success: false, message: "Database unavailable" });
-      });
-  } else {
-    next();
-  }
-};
-
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
   "https://mern-auth-eight-chi.vercel.app",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
+
+// Middleware for DB connection on each request
+const ensureDBConnection = async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error("DB connection error:", error);
+    res.status(503).json({ success: false, message: "Database unavailable" });
+  }
+};
 
 app.use(express.json());
 app.use(cookieParser());
@@ -65,10 +44,12 @@ app.use(
 
 app.get("/", (req, res) => res.send("API working"));
 app.get("/api/health", (req, res) =>
-  res.json({ success: true, message: "Server is running", dbConnected }),
+  res.json({ success: true, message: "Server is running" }),
 );
-app.use("/api/auth", checkDB, authRouter);
-app.use("/api/user", checkDB, userRouter);
+
+// Apply DB middleware to routes that need it
+app.use("/api/auth", ensureDBConnection, authRouter);
+app.use("/api/user", ensureDBConnection, userRouter);
 
 // Catch 404
 app.use((req, res) => {
