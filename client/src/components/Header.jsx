@@ -19,8 +19,10 @@ const Header = () => {
         Welcome to our app
       </h2>
       <p className="mb-8 max-w-md">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
+        Experience a seamless and secure user journey. From the custom-built
+        UI/UX in React to the scalable Express backend, every layer of this
+        application is optimized for performance, security, and a frictionless
+        authentication experience.
       </p>
       <button className="border border-gray-500 rounded-full px-8 py-2.5 hover:bg-gray-100 transition-all ">
         Get Started
