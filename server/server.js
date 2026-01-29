@@ -9,7 +9,6 @@ import userRouter from "./routes/userRoutes.js";
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Connect DB once at startup (but don't block)
 connectDB().catch((err) => console.error("DB startup error:", err));
 
 const allowedOrigins = [
@@ -42,7 +41,6 @@ app.get("/api/health", (req, res) =>
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 
-// Error handling middleware (must be last)
 app.use((err, req, res, next) => {
   console.error("Error:", err);
   res

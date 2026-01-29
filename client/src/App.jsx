@@ -13,15 +13,6 @@ const App = () => {
   const { getUserData, isLoggedin, setIsLoggedIn, userData } =
     useContext(AppContent);
 
-  // // --- FIX 1: Send cookies with EVERY request ---
-  // axios.defaults.withCredentials = true;
-
-  // // --- FIX 2: Check if user is logged in on Page Load ---
-  // useEffect(() => {
-  //   // Attempt to fetch user data immediately
-  //   getUserData();
-  // }, []); // Empty dependency array = runs once on mount
-
   return (
     <div>
       <ToastContainer />
